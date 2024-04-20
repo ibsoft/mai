@@ -1,11 +1,11 @@
+import numpy as np
+import random
 import json
 import os
 import torch
 import torch.nn as nn
-import numpy as np
-import matplotlib.pyplot as plt
 from torch.utils.data import Dataset, DataLoader
-from tqdm import tqdm  # Import tqdm for progress bars
+import matplotlib.pyplot as plt
 from train_utils import bag_of_words, tokenize, stem
 from mai import maiNeuralNetWork
 
@@ -27,7 +27,6 @@ clear_screen()
 
 def print_banner():
     banner = """
-     
                     __       __   ______   ______ 
                     /  \     /  | /      \ /      |
                     $$  \   /$$ |/$$$$$$  |$$$$$$/ 
@@ -76,16 +75,15 @@ batch_size = training_params['batch_size']
 patience = training_params['patience']
 dropout_prob = training_params['dropout']  # Add dropout probability
 
-# Define function to plot training and validation loss
+# Define function to plot training loss
 
 
-def plot_loss(train_losses, val_losses, save_path):
+def plot_loss(train_losses, save_path):
     plt.figure(figsize=(10, 6))
     plt.plot(train_losses, label='Training Loss')
-    plt.plot(val_losses, label='Validation Loss')
     plt.xlabel('Epoch')
     plt.ylabel('Loss')
-    plt.title('Training and Validation Loss')
+    plt.title('Training Loss')
     plt.legend()
     plt.grid(True)
 
@@ -98,12 +96,9 @@ def plot_loss(train_losses, val_losses, save_path):
 with open('data/MaiDataset.json', 'r') as f:
     intents = json.load(f)
 
-# Remove the check for the 'intents' key and directly proceed with processing the dataset
-
 all_words = []
 tags = []
 xy = []
-
 # loop through each sentence in our intents patterns
 for intent in intents['intents']:
     tag = intent['tag']
@@ -129,39 +124,32 @@ print(len(tags), "tags:", tags)
 print(len(all_words), "unique stemmed words:", all_words)
 
 # create training data
-X = []
-y = []
+X_train = []
+y_train = []
 for (pattern_sentence, tag) in xy:
     # X: bag of words for each pattern_sentence
     bag = bag_of_words(pattern_sentence, all_words)
-    X.append(bag)
+    X_train.append(bag)
     # y: PyTorch CrossEntropyLoss needs only class labels, not one-hot
     label = tags.index(tag)
-    y.append(label)
-
-# Manually split the data
-split_ratio = 0.8  # 80% train, 20% validation
-split_index = int(len(X) * split_ratio)
-
-X_train, X_val = X[:split_index], X[split_index:]
-y_train, y_val = y[:split_index], y[split_index:]
+    y_train.append(label)
 
 X_train = np.array(X_train)
 y_train = np.array(y_train)
-X_val = np.array(X_val)
-y_val = np.array(y_val)
+
+# Hyper-parameters
 
 input_size = len(X_train[0])
 output_size = len(tags)
-
 print(input_size, output_size)
 
 
-class maiDataset(Dataset):
-    def __init__(self, X, y):
-        self.n_samples = len(X)
-        self.x_data = torch.tensor(X).float()
-        self.y_data = torch.tensor(y)
+class ChatDataset(Dataset):
+
+    def __init__(self):
+        self.n_samples = len(X_train)
+        self.x_data = X_train
+        self.y_data = y_train
 
     # support indexing such that dataset[i] can be used to get i-th sample
     def __getitem__(self, index):
@@ -172,22 +160,11 @@ class maiDataset(Dataset):
         return self.n_samples
 
 
-train_dataset = maiDataset(X_train, y_train)
-val_dataset = maiDataset(X_val, y_val)
-
-# Convert target labels to LongTensor
-train_dataset.y_data = train_dataset.y_data.long()
-val_dataset.y_data = val_dataset.y_data.long()
-
-train_loader = DataLoader(dataset=train_dataset,
+dataset = ChatDataset()
+train_loader = DataLoader(dataset=dataset,
                           batch_size=batch_size,
                           shuffle=True,
                           num_workers=0)
-
-val_loader = DataLoader(dataset=val_dataset,
-                        batch_size=batch_size,
-                        shuffle=False,
-                        num_workers=0)
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -200,22 +177,17 @@ optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
 
 # Lists to store loss values for plotting
 train_loss_values = []
-val_loss_values = []
-
-# Initialize consecutive worse epochs counter
-consecutive_worse_epochs = 0
 
 # Train the model
 for epoch in range(num_epochs):
-    model.train()
-    train_epoch_loss = 0
-    train_loader_size = len(train_loader)
-    for i, (words, labels) in enumerate(train_loader):
+    for (words, labels) in train_loader:
         words = words.to(device)
-        labels = labels.to(device)
+        labels = labels.to(dtype=torch.long).to(device)
 
         # Forward pass
         outputs = model(words)
+        # if y would be one-hot, we must apply
+        # labels = torch.max(labels, 1)[1]
         loss = criterion(outputs, labels)
 
         # Backward and optimize
@@ -223,50 +195,26 @@ for epoch in range(num_epochs):
         loss.backward()
         optimizer.step()
 
-        train_epoch_loss += loss.item()
-
-        # Display progress bar
-        print(
-            f'\rEpoch [{epoch+1}/{num_epochs}], Train Loss: {train_epoch_loss / (i+1):.4f}', end='', flush=True)
-
-    # Calculate average training loss for the epoch
-    train_epoch_loss /= train_loader_size
-    train_loss_values.append(train_epoch_loss)
-
-    # Validation
-    model.eval()
-    val_epoch_loss = 0
-    val_loader_size = len(val_loader)
-    for i, (words, labels) in enumerate(val_loader):
-        words = words.to(device)
-        labels = labels.to(device)
-
-        # Forward pass
-        outputs = model(words)
-        loss = criterion(outputs, labels)
-
-        val_epoch_loss += loss.item()
-
-    # Calculate average validation loss for the epoch
-    val_epoch_loss /= val_loader_size
-    val_loss_values.append(val_epoch_loss)
+    train_loss_values.append(loss.item())
 
     if (epoch+1) % 100 == 0:
-        print(
-            f', Val Loss: {val_epoch_loss:.4f}')
+        print(f'Epoch [{epoch+1}/{num_epochs}], Loss: {loss.item():.4f}')
 
-    # Check if validation loss exceeds training loss
-    if val_epoch_loss > train_epoch_loss:
-        consecutive_worse_epochs += 1
-    else:
-        consecutive_worse_epochs = 0
+# Plotting the training loss
+plot_loss(train_loss_values, 'graphs/training_loss.png')
 
-    if consecutive_worse_epochs >= patience:
-        print(
-            f'\nValidation loss exceeded training loss for {patience} consecutive epochs. Exiting training loop.')
-        plot_loss(train_loss_values, val_loss_values, 'graphs/loss_plot.png')
-        break
+print(f'final loss: {loss.item():.4f}')
 
-print(
-    f'final training loss: {train_loss_values[-1]:.4f}, final validation loss: {val_loss_values[-1]:.4f}')
-plot_loss(train_loss_values, val_loss_values, 'graphs/loss_plot.png')
+data = {
+    "model_state": model.state_dict(),
+    "input_size": input_size,
+    "hidden_size": hidden_size,
+    "output_size": output_size,
+    "all_words": all_words,
+    "tags": tags
+}
+
+FILE = "model/mai-model.pth"
+torch.save(data, FILE)
+
+print(f'training complete. file saved to {FILE}')
