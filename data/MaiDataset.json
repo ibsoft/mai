@@ -1,0 +1,160 @@
+{
+    "intents": [
+      {
+        "tag": "greeting",
+        "patterns": [
+          "Hi",
+          "Hey",
+          "How are you",
+          "Is anyone there?",
+          "Hello",
+          "Good day"
+        ],
+        "responses": [
+          "Hey :-)",
+          "Hello, thanks for visiting",
+          "Hi there, what can I do for you?",
+          "Hi there, how can I help?"
+        ]
+      },
+      {
+        "tag": "goodbye",
+        "patterns": ["Bye", "See you later", "Goodbye"],
+        "responses": [
+          "See you later, thanks for visiting",
+          "Have a nice day",
+          "Bye! Come back again soon."
+        ]
+      },
+      {
+        "tag": "thanks",
+        "patterns": ["Thanks", "Thank you", "That's helpful", "Thank's a lot!"],
+        "responses": ["Happy to help!", "Any time!", "My pleasure"]
+      },
+      {
+        "tag": "items",
+        "patterns": [
+          "Which items do you have?",
+          "What kinds of items are there?",
+          "What do you sell?"
+        ],
+        "responses": [
+          "We sell coffee and tea",
+          "We have coffee and tea"
+        ]
+      },
+      {
+        "tag": "payments",
+        "patterns": [
+          "Do you take credit cards?",
+          "Do you accept Mastercard?",
+          "Can I pay with Paypal?",
+          "Are you cash only?"
+        ],
+        "responses": [
+          "We accept VISA, Mastercard and Paypal",
+          "We accept most major credit cards, and Paypal"
+        ]
+      },
+      {
+        "tag": "delivery",
+        "patterns": [
+          "How long does delivery take?",
+          "How long does shipping take?",
+          "When do I get my delivery?"
+        ],
+        "responses": [
+          "Delivery takes 2-4 days",
+          "Shipping takes 2-4 days"
+        ]
+      },
+      {
+        "tag": "funny",
+        "patterns": [
+          "Tell me a joke!",
+          "Tell me something funny!",
+          "Do you know a joke?"
+        ],
+        "responses": [
+          "Why did the hipster burn his mouth? He drank the coffee before it was cool.",
+          "What did the buffalo say when his son left for college? Bison."
+        ]
+      },
+      {
+        "tag": "hardware",
+        "patterns": [
+          "What is hardware?",
+          "Define hardware.",
+          "Examples of hardware?",
+          "What are hardware components?"
+        ],
+        "responses": [
+          "Hardware refers to the physical components of a computer system.",
+          "Hardware includes devices such as the CPU, memory, motherboard, and peripherals.",
+          "Examples of hardware include monitors, keyboards, mice, printers, and storage devices.",
+          "Hardware components are the tangible parts of a computer system that you can see and touch."
+        ]
+      },
+      {
+        "tag": "software",
+        "patterns": [
+          "What is software?",
+          "Define software.",
+          "Examples of software?",
+          "Types of software?"
+        ],
+        "responses": [
+          "Software refers to the programs, data, and instructions that enable computers to perform specific tasks.",
+          "Software includes operating systems, applications, utilities, and programming languages.",
+          "Examples of software include Microsoft Windows, macOS, Linux, Microsoft Office, Photoshop, and Chrome.",
+          "Types of software include system software, application software, and programming software."
+        ]
+      },
+      {
+        "tag": "programming",
+        "patterns": [
+          "What is programming?",
+          "Define programming.",
+          "Popular programming languages?",
+          "How to start learning programming?"
+        ],
+        "responses": [
+          "Programming is the process of creating instructions for computers to execute.",
+          "Programming involves writing code using programming languages to solve problems and develop software applications.",
+          "Popular programming languages include Python, Java, JavaScript, C++, and Ruby.",
+          "To start learning programming, you can choose a beginner-friendly language, follow online tutorials, practice coding exercises, and build projects."
+        ]
+      },
+      {
+        "tag": "networking",
+        "patterns": [
+          "What is computer networking?",
+          "Define networking.",
+          "Types of computer networks?",
+          "Importance of networking?"
+        ],
+        "responses": [
+          "Computer networking involves connecting computers and other devices to share resources and information.",
+          "Networking is the practice of linking computers and other devices together to facilitate communication and resource sharing.",
+          "Types of computer networks include LAN (Local Area Network), WAN (Wide Area Network), WLAN (Wireless Local Area Network), and MAN (Metropolitan Area Network).",
+          "Networking is important for communication, resource sharing, collaboration, and accessing information over the internet."
+        ]
+      },
+      {
+        "tag": "security",
+        "patterns": [
+          "What is computer security?",
+          "Define security.",
+          "Importance of computer security?",
+          "Ways to improve computer security?"
+        ],
+        "responses": [
+          "Computer security refers to the protection of computer systems and data from unauthorized access, use, theft, or damage.",
+          "Security involves measures taken to safeguard computers, networks, and information from threats and vulnerabilities.",
+          "Computer security is important to prevent data breaches, identity theft, financial loss, and disruption of services.",
+          "Ways to improve computer security include using strong passwords, installing antivirus software, keeping software up to date, enabling firewalls, and practicing safe browsing habits."
+        ]
+      }
+    ]
+  }
+  

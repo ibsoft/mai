@@ -1,0 +1,11 @@
+  {
+    "training_params": {
+      "num_epochs": 700,
+      "batch_size": 256,
+      "learning_rate": 0.0005,
+      "hidden_size": 5,
+      "patience": 700,
+      "dropout": 0.5
+    }
+  }
+  
