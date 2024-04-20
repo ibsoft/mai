@@ -9,6 +9,44 @@ from tqdm import tqdm  # Import tqdm for progress bars
 from train_utils import bag_of_words, tokenize, stem
 from mai import maiNeuralNetWork
 
+# Clear screen based on the platform
+
+
+def clear_screen():
+    if os.name == 'posix':  # For Linux and macOS
+        os.system('clear')
+    elif os.name == 'nt':   # For Windows
+        os.system('cls')
+    else:
+        # For other operating systems, print a bunch of newlines to mimic clearing
+        print('\n' * 100)
+
+
+clear_screen()
+
+
+def print_banner():
+    banner = """
+     
+                    __       __   ______   ______ 
+                    /  \     /  | /      \ /      |
+                    $$  \   /$$ |/$$$$$$  |$$$$$$/ 
+                    $$$  \ /$$$ |$$ |__$$ |  $$ |  
+                    $$$$  /$$$$ |$$    $$ |  $$ |  
+                    $$ $$ $$/$$ |$$$$$$$$ |  $$ |  
+                    $$ |$$$/ $$ |$$ |  $$ | _$$ |_ 
+                    $$ | $/  $$ |$$ |  $$ |/ $$   |
+                    $$/      $$/ $$/   $$/ $$$$$$/ 
+                                                
+
+                      Ioannis (Yannis) A. Bouhras  
+   
+    """
+    print(banner)
+
+
+print_banner()
+
 
 def load_config(config_path):
     try:
@@ -39,6 +77,8 @@ patience = training_params['patience']
 dropout_prob = training_params['dropout']  # Add dropout probability
 
 # Define function to plot training and validation loss
+
+
 def plot_loss(train_losses, val_losses, save_path):
     plt.figure(figsize=(10, 6))
     plt.plot(train_losses, label='Training Loss')

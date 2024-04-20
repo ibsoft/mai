@@ -1,3 +1,4 @@
+import os
 import random
 import json
 
@@ -48,6 +49,45 @@ model = maiNeuralNetWork(input_size, hidden_size,
                          output_size, dropout_prob).to(device)
 model.load_state_dict(model_state)
 model.eval()
+
+# Clear screen based on the platform
+
+
+def clear_screen():
+    if os.name == 'posix':  # For Linux and macOS
+        os.system('clear')
+    elif os.name == 'nt':   # For Windows
+        os.system('cls')
+    else:
+        # For other operating systems, print a bunch of newlines to mimic clearing
+        print('\n' * 100)
+
+
+clear_screen()
+
+
+def print_banner():
+    banner = """
+     
+                    __       __   ______   ______ 
+                    /  \     /  | /      \ /      |
+                    $$  \   /$$ |/$$$$$$  |$$$$$$/ 
+                    $$$  \ /$$$ |$$ |__$$ |  $$ |  
+                    $$$$  /$$$$ |$$    $$ |  $$ |  
+                    $$ $$ $$/$$ |$$$$$$$$ |  $$ |  
+                    $$ |$$$/ $$ |$$ |  $$ | _$$ |_ 
+                    $$ | $/  $$ |$$ |  $$ |/ $$   |
+                    $$/      $$/ $$/   $$/ $$$$$$/ 
+                                                
+
+                      Ioannis (Yannis) A. Bouhras  
+   
+    """
+    print(banner)
+
+
+print_banner()
+
 
 bot_name = "MAI"
 print("Let's GO! (type 'quit' to exit)")
